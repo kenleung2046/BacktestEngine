@@ -7,15 +7,17 @@ stock_pool=mid_pe_stock_pool
 # 股票池的调整周期
 stock_pool_interval=7
 # 回测周期，开始日期
-begin_date=20130101
+begin_date=20190215
 # 回测周期，结束日期，如果不指定，则默认为当前日期
-end_date=20190306
+end_date=20190228
 # 总资金
 capital=10000000
 # 头寸分配方法
-position=fixed_amount
+position=fixed_percentage
 # 单只股票的头寸
 fixed_amount=200000
+# 单只股票的头寸占比
+fixed_percentage=0.02
 # 指定加仓方法
 add_position=fixed
 # 指定止损方法
@@ -30,3 +32,5 @@ profit=10
 base_profit=10
 # 回撤止盈的回撤比例
 drawdown=1
+# 信号
+signal=ma_10

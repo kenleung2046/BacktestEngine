@@ -64,7 +64,7 @@ class MidPeStockPool(BaseStockPool):
                 if daily is None:
                     continue
 
-                if len(stocks) >= 50:
+                if len(stocks) >= 100:
                     break
 
                 stocks.append(code)
