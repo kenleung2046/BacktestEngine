@@ -19,11 +19,11 @@ class MA10Signal(BaseSignal):
         BaseSignal.__init__(self)
 
     def get_stock_signal(self, code, date):
-        signal = db.Signal_MA_10.find_one(
+        signal = db.Signal.find_one(
             {'ts_code': code, 'trade_date': date},
         )
 
         if signal is not None:
-            return signal['signal']
+            return signal['signal_ma_10']
         else:
             return 0
