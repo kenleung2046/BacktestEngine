@@ -20,7 +20,7 @@ class MA10Signal(BaseSignal):
 
     def get_stock_signal(self, code, date):
         signal = db.Signal.find_one(
-            {'ts_code': code, 'trade_date': date},
+            {'ts_code': code, 'trade_date': date, 'signal_ma_10': {'$in': ['up_break', 'down_break']}},
         )
 
         if signal is not None:
