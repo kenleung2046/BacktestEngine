@@ -40,7 +40,7 @@ class Backtest:
         print(all_dates, flush=True)
         print('回测交易日总数：', len(all_dates), flush=True)
 
-        hs300_begin_value = db.Index_Quotation_Daily.find_one(
+        hs300_begin_value = db.index_daily.find_one(
             {'ts_code': '000300.SH',
              'trade_date': all_dates[0]},
             projection={'close': True})['close']
@@ -68,7 +68,7 @@ class Backtest:
 
             # 处理复权
             if last_date is not None and len(before_sell_holding_codes) > 0:
-                last_daily_cursor = db.Adj_Factor.find(
+                last_daily_cursor = db.adj_factor.find(
                     {'ts_code': {'$in': before_sell_holding_codes}, 'trade_date': last_date},
                     projection={'ts_code': True, 'adj_factor': True})
 
@@ -77,7 +77,7 @@ class Backtest:
                 for last_daily in last_daily_cursor:
                     code_last_aufactor_dict[last_daily['ts_code']] = last_daily['adj_factor']
 
-                current_daily_cursor = db.Adj_Factor.find(
+                current_daily_cursor = db.adj_factor.find(
                     {'ts_code': {'$in': before_sell_holding_codes}, 'trade_date': _date},
                     projection={'ts_code': True, 'adj_factor': True})
 
@@ -96,7 +96,7 @@ class Backtest:
             print('待卖股票池：', to_be_sold_codes, flush=True)
             print('待卖股票池总数：', len(to_be_sold_codes), flush=True)
             if len(to_be_sold_codes) > 0:
-                sell_daily_cursor = db.Quotation_Daily.find(
+                sell_daily_cursor = db.quotation_daily.find(
                     {'ts_code': {'$in': list(to_be_sold_codes)}, 'trade_date': _date, 'is_trading': True},
                     projection={'open': True, 'ts_code': True}
                 )
@@ -124,7 +124,7 @@ class Backtest:
             print('待买股票池：', to_be_bought_codes, flush=True)
             print('待买股票池总数：', len(to_be_bought_codes), flush=True)
             if len(to_be_bought_codes) > 0:
-                buy_daily_cursor = db.Quotation_Daily.find(
+                buy_daily_cursor = db.quotation_daily.find(
                     {'ts_code': {'$in': list(to_be_bought_codes)}, 'trade_date': _date, 'is_trading': True},
                     projection={'ts_code': True, 'open': True}
                 )
@@ -151,7 +151,7 @@ class Backtest:
             print('待加仓股票池总数：', len(to_be_added_codes), flush=True)
             if add_position is not None:
                 if len(to_be_added_codes) > 0:
-                    added_daily_cursor = db.Quotation_Daily.find(
+                    added_daily_cursor = db.quotation_daily.find(
                         {'ts_code': {'$in': list(to_be_added_codes)}, 'trade_date': _date, 'is_trading': True},
                         projection={'ts_code': True, 'open': True}
                     )
@@ -215,7 +215,7 @@ class Backtest:
 
             # 计算总资产
             total_value = 0
-            holding_daily_cursor = db.Quotation_Daily.find(
+            holding_daily_cursor = db.quotation_daily.find(
                 {'ts_code': {'$in': holding_codes}, 'trade_date': _date},
                 projection={'close': True, 'ts_code': True}
             )
@@ -252,7 +252,7 @@ class Backtest:
 
             total_capital = total_value + cash
 
-            hs300_current_value = db.Index_Quotation_Daily.find_one(
+            hs300_current_value = db.index_daily.find_one(
                 {'ts_code': '000300.SH', 'trade_date': _date},
                 projection={'close': True})['close']
 
@@ -295,7 +295,7 @@ def find_out_stocks(last_phase_codes, this_phase_codes):
 
 def get_trading_dates(begin_date, end_date):
 
-    date_cursor = db.Calendar.find(
+    date_cursor = db.calendar.find(
         {'cal_date': {'$gte': begin_date, '$lte': end_date},
          'is_open': True},
         sort=[('cal_date', ASCENDING)],

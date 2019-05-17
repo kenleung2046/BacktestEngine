@@ -19,7 +19,7 @@ class LowPeStockPool(BaseStockPool):
         BaseStockPool.__init__(self, '低PE股票池', begin_date, end_date, interval)
 
     def get_option_stocks(self):
-        date_cursor = db.Calendar.find(
+        date_cursor = db.calendar.find(
             {'cal_date': {'$gte': self.begin_date, '$lte': self.end_date},
              'is_open': True},
             sort=[('cal_date', ASCENDING)],
@@ -35,7 +35,7 @@ class LowPeStockPool(BaseStockPool):
         for index in range(0, len(dates), self.interval):
             current_adjust_date = dates[index]
 
-            pe_cursor = db.Fundamental.find(
+            pe_cursor = db.fundamental.find(
                 {'trade_date': current_adjust_date,
                  'pe': {'$gt': 0, '$lt': 30}},
                 sort=[('pe', ASCENDING)],
@@ -44,7 +44,7 @@ class LowPeStockPool(BaseStockPool):
 
             stocks = []
             if last_stocks is not None:
-                suspension_daily_cursor = db.Quotation_Daily.find(
+                suspension_daily_cursor = db.quotation_daily.find(
                     {'ts_code': {'$in': last_stocks},
                      'trade_date': current_adjust_date,
                      'is_trading': False},
@@ -57,7 +57,7 @@ class LowPeStockPool(BaseStockPool):
             for pe in pe_cursor:
                 code = pe['ts_code']
 
-                daily = db.Quotation_Daily.find_one(
+                daily = db.quotation_daily.find_one(
                     {'ts_code': code, 'trade_date': current_adjust_date, 'is_trading': True}
                 )
 

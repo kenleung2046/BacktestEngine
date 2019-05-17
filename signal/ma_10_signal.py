@@ -19,7 +19,7 @@ class MA10Signal(BaseSignal):
         BaseSignal.__init__(self)
 
     def get_stock_signal(self, code, date):
-        signal = db.Signal.find_one(
+        signal = db.signal.find_one(
             {'ts_code': code, 'trade_date': date, 'signal_ma_10': {'$in': ['up_break', 'down_break']}},
         )
 
